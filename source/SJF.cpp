@@ -1,5 +1,4 @@
 #include "SJF.hpp"
-#include <iostream>
 
 void InsertProcessInQueue( const std::vector<Process> &vecProcess, min_priority_queue &priority_queue, int &time )
 {
@@ -49,11 +48,9 @@ Metrics SJF( const std::vector<Process> &vecProcess )
         process = priority_queue.top();
         index = process.id_;
 
-        std::cout << process.id_ << '(' << process.duration_ << ")\n";
-
-        vecMetrics[index].waiting_time_ = time - process.arrive_time_;
-        vecMetrics[index].return_time_ = vecMetrics[index].waiting_time_ + process.duration_;
-        vecMetrics[index].response_time_ = vecMetrics[index].waiting_time_;
+        vecMetrics[index].response_time_ = time - process.arrive_time_;
+        vecMetrics[index].return_time_ = vecMetrics[index].response_time_ + process.duration_;
+        vecMetrics[index].waiting_time_ = vecMetrics[index].response_time_;
 
         time += process.duration_;
 
@@ -64,8 +61,6 @@ Metrics SJF( const std::vector<Process> &vecProcess )
         average_metrics.response_time_ += vecMetrics[index].response_time_;
         average_metrics.waiting_time_ += vecMetrics[index].waiting_time_;
     }
-
-    std::cout << std::endl;
 
     average_metrics.return_time_ /= (float)num_processes;
     average_metrics.response_time_ /= (float)num_processes;
