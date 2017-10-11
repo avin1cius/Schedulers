@@ -38,12 +38,11 @@ int main( int argc, char *argv[ ] )
     }
 
     std::sort( vecProcess.begin(), vecProcess.end(), CompareProcesses ); //Sorting by arrive time
+    
     for ( int i = 0; i < (int)vecProcess.size(); i++ )
     {
         vecProcess[i].id_ = i;
-        std::cout << vecProcess[i].id_ << " " << vecProcess[i].arrive_time_ << " " << vecProcess[i].duration_ << std::endl;
     }
-    std::cout << std::endl;
 
     PrintMetrics( "FCFS", FCFS( vecProcess ) );
 

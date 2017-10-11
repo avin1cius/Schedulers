@@ -18,6 +18,8 @@ public:
 
 using min_priority_queue = std::priority_queue<Process, std::vector<Process>, CompareDurations>;
 
-void InsertProcessInQueue( const std::vector<Process> &vecProcess, min_priority_queue &priority_queue, int &time );
+using const_iterator = std::vector<Process>::const_iterator;
+
+void InsertProcessInQueue( min_priority_queue &priority_queue, const_iterator &it, const const_iterator end_it, int &time, const int size );
 
 #endif // SJF_HPP_ 

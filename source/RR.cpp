@@ -4,15 +4,13 @@ inline void InsertProcessInQueue( std::queue<Process> &queue, const_iterator &it
 {
     while ( it != end_it )
     {
-        if ( (*it).arrive_time_ == time )
+        if ( queue.empty() )
         {
-            queue.push( *it );
-            it++;
-        }
-        else if ( queue.empty() )
-        {
-            queue.push( *it );
             time = (*it).arrive_time_;
+        }
+        if ( (*it).arrive_time_ <= time )
+        {
+            queue.push( *it );
             it++;
         }
         else break;  
@@ -48,12 +46,12 @@ Metrics RR( const std::vector<Process> &vecProcess, int quantum )
 
     while ( it != end_it )
     {
-        if ( (*it).arrive_time_ == 0 )
+        if ( (*it).arrive_time_ == vecProcess[0].arrive_time_ )
         {
             queue.push( *it );
-            it++;
         }
-        else break;        
+        else break;
+        it++;
     }    
 
     while ( remaining_processes )

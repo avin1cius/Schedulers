@@ -1,29 +1,26 @@
 #include "SJF.hpp"
+#include <iostream>
 
-void InsertProcessInQueue( const std::vector<Process> &vecProcess, min_priority_queue &priority_queue, int &time )
+void InsertProcessInQueue( min_priority_queue &priority_queue, const_iterator &it, const const_iterator end_it, int &time, const int size )
 {
-    static int last_inserted;
-    int num_inserted = 0;    
-    std::vector<Process>::const_iterator it = ( vecProcess.begin() + last_inserted );
+    static std::vector<bool> inserted( size, false );
+    int num_inserted = 0;
 
-    while ( it != vecProcess.end() )
+    while ( it != end_it )
     {
-        if ( (*it).arrive_time_ <= time )
+        if ( priority_queue.empty() && (*it).arrive_time_ > time)
         {
-            priority_queue.push( *it );
-            last_inserted = (*it).id_ + 1;
-            num_inserted++;
-            it++;
-        }
-        else if ( !num_inserted )
-        {
-            priority_queue.push( *it );
-            last_inserted = (*it).id_ + 1;
-            num_inserted++;      
             time = (*it).arrive_time_;
-            it++;
+        }
+
+        if ( ( (*it).arrive_time_ <= time ) && !inserted[(*it).id_] )
+        {
+            priority_queue.push( *it );
+            inserted[(*it).id_] = true;
+            num_inserted++;
         }
         else break;
+        it++;
     }
 }
 
@@ -32,6 +29,7 @@ Metrics SJF( const std::vector<Process> &vecProcess )
     const int num_processes = vecProcess.size();
     int time = 0;
     int remaining_processes = num_processes;
+    const_iterator it = vecProcess.begin(), end_it = vecProcess.end();
 
     std::vector<Metrics> vecMetrics( num_processes );
     Metrics average_metrics = {};
@@ -43,9 +41,10 @@ Metrics SJF( const std::vector<Process> &vecProcess )
 
     while ( remaining_processes )
     {
-        InsertProcessInQueue( vecProcess, priority_queue, time );
+        InsertProcessInQueue( priority_queue, it, end_it, time, num_processes );
 
         process = priority_queue.top();
+
         index = process.id_;
 
         vecMetrics[index].response_time_ = time - process.arrive_time_;
